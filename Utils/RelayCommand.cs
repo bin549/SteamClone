@@ -4,37 +4,37 @@ using System.Windows.Input;
 namespace steam.Utils;
 
 public class RelayCommand : ICommand {
-	private readonly Action _execute;
-	private readonly Func<bool>? _canExecute;
+	private readonly Action execute;
+	private readonly Func<bool>? canExecute;
 
 	public RelayCommand(Action execute, Func<bool>? canExecute = null) {
-		_execute = execute ?? throw new ArgumentNullException(nameof(execute));
-		_canExecute = canExecute;
+		this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
+		this.canExecute = canExecute;
 	}
 
 	public event EventHandler? CanExecuteChanged;
 
-	public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
+	public bool CanExecute(object? parameter) => this.canExecute?.Invoke() ?? true;
 
-	public void Execute(object? parameter) => _execute();
+	public void Execute(object? parameter) => this.execute();
 
 	public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 }
 
 public class RelayCommand<T> : ICommand {
-	private readonly Action<T?> _execute;
-	private readonly Func<T?, bool>? _canExecute;
+	private readonly Action<T?> this.execute;
+	private readonly Func<T?, bool>? this.canExecute;
 
 	public RelayCommand(Action<T?> execute, Func<T?, bool>? canExecute = null) {
-		_execute = execute ?? throw new ArgumentNullException(nameof(execute));
-		_canExecute = canExecute;
+		this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
+		this.canExecute = canExecute;
 	}
 
 	public event EventHandler? CanExecuteChanged;
 
-	public bool CanExecute(object? parameter) => _canExecute?.Invoke((T?)parameter) ?? true;
+	public bool CanExecute(object? parameter) => this.canExecute?.Invoke((T?)parameter) ?? true;
 
-	public void Execute(object? parameter) => _execute((T?)parameter);
+	public void Execute(object? parameter) => this.execute((T?)parameter);
 
 	public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 }
