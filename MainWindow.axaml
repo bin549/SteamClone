@@ -11,91 +11,94 @@
         x:DataType="vm:MainViewModel"
         Title="Launcher"
         Width="1100" Height="700">
-	<Window.Resources>
-		<LinearGradientBrush x:Key="AppBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
-			<GradientStop Offset="0" Color="#171A24"/>
-			<GradientStop Offset="0.45" Color="#11131C"/>
-			<GradientStop Offset="1" Color="#0B0D13"/>
-		</LinearGradientBrush>
-		<SolidColorBrush x:Key="CardBackgroundBrush" Color="#202534"/>
-		<SolidColorBrush x:Key="CardHoverBrush" Color="#2B3145"/>
-		<SolidColorBrush x:Key="SubtleTextBrush" Color="#9AA3B7"/>
-	</Window.Resources>
+    <Window.Resources>
+        <LinearGradientBrush x:Key="AppBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Offset="0" Color="#171A24" />
+            <GradientStop Offset="0.45" Color="#11131C" />
+            <GradientStop Offset="1" Color="#0B0D13" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="CardBackgroundBrush" Color="#202534" />
+        <SolidColorBrush x:Key="CardHoverBrush" Color="#2B3145" />
+        <SolidColorBrush x:Key="SubtleTextBrush" Color="#9AA3B7" />
+    </Window.Resources>
 
-	<Window.Background>
-		<StaticResource ResourceKey="AppBackgroundBrush"/>
-	</Window.Background>
-	<Window.Styles>
-		<Style Selector="TextBlock.h1">
-			<Setter Property="FontSize" Value="24"/>
-			<Setter Property="FontWeight" Value="SemiBold"/>
-		</Style>
-		<Style Selector="Border.card">
-			<Setter Property="CornerRadius" Value="12"/>
-			<Setter Property="Background" Value="{StaticResource CardBackgroundBrush}"/>
-			<Setter Property="BorderBrush" Value="#353C51"/>
-			<Setter Property="BorderThickness" Value="1"/>
-		</Style>
-		<Style Selector="Button.cardButton">
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="BorderBrush" Value="Transparent"/>
-			<Setter Property="Padding" Value="0"/>
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>
-			<Setter Property="VerticalAlignment" Value="Stretch"/>
-		</Style>
-		<Style Selector="Button.cardButton:pointerover /template/ Border#border">
-			<Setter Property="Background" Value="{StaticResource CardHoverBrush}"/>
-		</Style>
-	</Window.Styles>
+    <Window.Background>
+        <StaticResource ResourceKey="AppBackgroundBrush" />
+    </Window.Background>
+    <Window.Styles>
+        <Style Selector="TextBlock.h1">
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="Border.card">
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="#353C51" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="Button.cardButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="Button.cardButton:pointerover /template/ Border#border">
+            <Setter Property="Background" Value="{StaticResource CardHoverBrush}" />
+        </Style>
+    </Window.Styles>
 
-	<Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="*">
-		<Border Padding="16">
-			<Grid ColumnDefinitions="Auto,*,Auto">
-				<TextBlock Classes="h1" Text="游戏启动器" VerticalAlignment="Center"/>
-				<StackPanel Orientation="Horizontal" Spacing="8" Grid.Column="2">
-					<TextBox Width="260"
-							 Watermark="搜索..."
-							 VerticalAlignment="Center"
-							 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
-					<Button Content="刷新" Command="{Binding RefreshCommand}" MinWidth="80"/>
-				</StackPanel>
-			</Grid>
-		</Border>
-		
-		<ScrollViewer Grid.Row="2" Margin="8" Padding="8,0,8,16">
-			<ItemsControl ItemsSource="{Binding FilteredGames}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel Orientation="Horizontal" ItemWidth="220" ItemHeight="220"/>
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
+    <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="*">
+        <Border Padding="16">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <TextBlock Classes="h1" Text="游戏启动器" VerticalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" Spacing="8" Grid.Column="2">
+                    <TextBox Width="260"
+                             Watermark="搜索..."
+                             VerticalAlignment="Center"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button Content="刷新" Command="{Binding RefreshCommand}" MinWidth="80" />
+                </StackPanel>
+            </Grid>
+        </Border>
 
-				<ItemsControl.ItemTemplate>
-					<DataTemplate x:DataType="models:GameEntry">
-						<Button Command="{Binding DataContext.OpenCommand, ElementName=Root}"
-								CommandParameter="{Binding}"
-								Classes="cardButton"
-								ToolTip.Tip="{Binding ExecutablePath}"
-								Margin="12"
-								HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch">
-							<Border Classes="card" Padding="10">
-								<Grid RowDefinitions="*,Auto" ColumnDefinitions="*">
-									<Grid ClipToBounds="True">
-										<Border Background="#252B3D" CornerRadius="8"/>
-										<Image Source="{Binding CoverImage}" Stretch="UniformToFill" />
-										<TextBlock Text="🎮" FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center"
-												   Foreground="#3F82F8" IsVisible="{Binding CoverImage, Converter={x:Static converters:ObjectConverters.IsNull}}"/>
-									</Grid>
-									<StackPanel Grid.Row="1" Margin="4,10,4,0" Spacing="4">
-										<TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontWeight="SemiBold"/>
-									</StackPanel>
-								</Grid>
-							</Border>
-						</Button>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</ScrollViewer>
-	</Grid>
+        <ScrollViewer Grid.Row="2" Margin="8" Padding="8,0,8,16">
+            <ItemsControl ItemsSource="{Binding FilteredGames}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" ItemWidth="220" ItemHeight="220" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:GameEntry">
+                        <Button Command="{Binding DataContext.OpenCommand, ElementName=Root}"
+                                CommandParameter="{Binding}"
+                                Classes="cardButton"
+                                ToolTip.Tip="{Binding ExecutablePath}"
+                                Margin="12"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch">
+                            <Border Classes="card" Padding="10">
+                                <Grid RowDefinitions="*,Auto" ColumnDefinitions="*">
+                                    <Grid ClipToBounds="True">
+                                        <Border Background="#252B3D" CornerRadius="8" />
+                                        <Image Source="{Binding CoverImage}" Stretch="UniformToFill" />
+                                        <TextBlock Text="🎮" FontSize="48" HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="#3F82F8"
+                                                   IsVisible="{Binding CoverImage, Converter={x:Static converters:ObjectConverters.IsNull}}" />
+                                    </Grid>
+                                    <StackPanel Grid.Row="1" Margin="4,10,4,0" Spacing="4">
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center"
+                                                   FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
 </Window>

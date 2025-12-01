@@ -14,83 +14,83 @@ using steam.Utils;
 namespace steam.ViewModels;
 
 public class MainViewModel : INotifyPropertyChanged {
-	public event PropertyChangedEventHandler? PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-	private void RaisePropertyChanged([CallerMemberName] string? propertyName = null) {
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-	}
+    private void RaisePropertyChanged([CallerMemberName] string? propertyName = null) {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
-	private string _libraryPath = ResolveDefaultLibraryPath();
-	public string LibraryPath {
-		get => _libraryPath;
-		set {
-			if (_libraryPath == value) return;
-			_libraryPath = value;
-			RaisePropertyChanged();
-		}
-	}
+    private string _libraryPath = ResolveDefaultLibraryPath();
 
-	private string _searchText = string.Empty;
-	public string SearchText {
-		get => _searchText;
-		set {
-			if (_searchText == value) return;
-			_searchText = value;
-			RaisePropertyChanged();
-			RaisePropertyChanged(nameof(FilteredGames));
-		}
-	}
+    public string LibraryPath {
+        get => _libraryPath;
+        set {
+            if (_libraryPath == value) return;
+            _libraryPath = value;
+            RaisePropertyChanged();
+        }
+    }
 
-	public ObservableCollection<GameEntry> Games { get; } = new();
+    private string _searchText = string.Empty;
 
-	public IEnumerable<GameEntry> FilteredGames =>
-		string.IsNullOrWhiteSpace(SearchText)
-			? Games
-			: Games.Where(g => g.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
-				|| g.ExecutablePath.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+    public string SearchText {
+        get => _searchText;
+        set {
+            if (_searchText == value) return;
+            _searchText = value;
+            RaisePropertyChanged();
+            RaisePropertyChanged(nameof(FilteredGames));
+        }
+    }
 
-	public ICommand RefreshCommand { get; }
-	public ICommand OpenCommand { get; }
+    public ObservableCollection<GameEntry> Games { get; } = new();
 
-	public MainViewModel() {
-		RefreshCommand = new RelayCommand(Refresh);
-		OpenCommand = new RelayCommand<GameEntry>(OpenGame);
-	}
+    public IEnumerable<GameEntry> FilteredGames =>
+        string.IsNullOrWhiteSpace(SearchText)
+            ? Games
+            : Games.Where(g => g.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
+                               || g.ExecutablePath.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
 
-	public void Refresh() {
-		Games.Clear();
-		var entries = LibraryScanner.Scan(LibraryPath);
-		foreach (var e in entries) {
-			Games.Add(e);
-		}
-		RaisePropertyChanged(nameof(FilteredGames));
-	}
+    public ICommand RefreshCommand { get; }
+    public ICommand OpenCommand { get; }
 
-	private void OpenGame(GameEntry? entry) {
-		if (entry == null) return;
-		try {
-			var psi = new ProcessStartInfo(entry.ExecutablePath) {
-				WorkingDirectory = entry.WorkingDirectory,
-				UseShellExecute = true
-			};
-			Process.Start(psi);
-		} catch (Exception ex) {
-			Debug.WriteLine(ex);
-		}
-	}
+    public MainViewModel() {
+        RefreshCommand = new RelayCommand(Refresh);
+        OpenCommand = new RelayCommand<GameEntry>(OpenGame);
+    }
 
-	private static string ResolveDefaultLibraryPath() {
-		var env = Environment.GetEnvironmentVariable("MG_LIBRARY_PATH");
-		if (!string.IsNullOrWhiteSpace(env) && Directory.Exists(env)) {
-			return env;
-		}
-		var defaultPath = @"F:\MG\library";
-		if (Directory.Exists(defaultPath)) {
-			return defaultPath;
-		}
-		var candidate = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "library"));
-		return Directory.Exists(candidate) ? candidate : defaultPath;
-	}
+    public void Refresh() {
+        Games.Clear();
+        var entries = LibraryScanner.Scan(LibraryPath);
+        foreach (var e in entries) {
+            Games.Add(e);
+        }
+        RaisePropertyChanged(nameof(FilteredGames));
+    }
+
+    private void OpenGame(GameEntry? entry) {
+        if (entry == null) return;
+        try {
+            var psi = new ProcessStartInfo(entry.ExecutablePath) {
+                WorkingDirectory = entry.WorkingDirectory,
+                UseShellExecute = true
+            };
+            Process.Start(psi);
+        } catch (Exception ex) {
+            Debug.WriteLine(ex);
+        }
+    }
+
+    private static string ResolveDefaultLibraryPath() {
+        var env = Environment.GetEnvironmentVariable("MG_LIBRARY_PATH");
+        if (!string.IsNullOrWhiteSpace(env) && Directory.Exists(env)) {
+            return env;
+        }
+        var defaultPath = @"F:\MG\library";
+        if (Directory.Exists(defaultPath)) {
+            return defaultPath;
+        }
+        var candidate = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "library"));
+        return Directory.Exists(candidate) ? candidate : defaultPath;
+    }
 }
-
-
