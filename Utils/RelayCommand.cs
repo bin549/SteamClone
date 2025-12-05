@@ -22,8 +22,8 @@ public class RelayCommand : ICommand {
 }
 
 public class RelayCommand<T> : ICommand {
-    private readonly Action<T?> this.execute;
-    private readonly Func<T?, bool>? this.canExecute;
+    private readonly Action<T?> execute;
+    private readonly Func<T?, bool>? canExecute;
 
     public RelayCommand(Action<T?> execute, Func<T?, bool>? canExecute = null) {
         this.execute = execute ?? throw new ArgumentNullException(nameof(execute));

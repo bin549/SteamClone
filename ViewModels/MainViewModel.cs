@@ -17,27 +17,27 @@ public class MainViewModel : INotifyPropertyChanged {
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void RaisePropertyChanged([CallerMemberName] string? propertyName = null) {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private string _libraryPath = ResolveDefaultLibraryPath();
+    private string libraryPath = ResolveDefaultLibraryPath();
 
     public string LibraryPath {
-        get => _libraryPath;
+        get => this.libraryPath;
         set {
-            if (_libraryPath == value) return;
-            _libraryPath = value;
+            if (this.libraryPath == value) return;
+            this.libraryPath = value;
             RaisePropertyChanged();
         }
     }
 
-    private string _searchText = string.Empty;
+    private string searchText = string.Empty;
 
     public string SearchText {
-        get => _searchText;
+        get => this.searchText;
         set {
-            if (_searchText == value) return;
-            _searchText = value;
+            if (this.searchText == value) return;
+            this.searchText = value;
             RaisePropertyChanged();
             RaisePropertyChanged(nameof(FilteredGames));
         }

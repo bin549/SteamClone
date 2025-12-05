@@ -38,20 +38,20 @@ public static class LibraryScanner {
         if (candidateExe == null) {
             return null;
         }
-        return this.CreateEntry(name, candidateExe, Path.GetDirectoryName(candidateExe) ?? appDir);
+        return CreateEntry(name, candidateExe, Path.GetDirectoryName(candidateExe) ?? appDir);
     }
 
     private static string? FindCandidateExe(string appDir) {
         var topLevelExe = Directory.GetFiles(appDir, "*.exe", SearchOption.TopDirectoryOnly)
             .FirstOrDefault(p =>
-                !this.ExeIgnorePrefixes.Any(pref =>
+                !ExeIgnorePrefixes.Any(pref =>
                     Path.GetFileName(p).StartsWith(pref, StringComparison.OrdinalIgnoreCase)));
         if (topLevelExe != null) {
             return topLevelExe;
         }
         foreach (var sub in Directory.GetDirectories(appDir)) {
             var subName = new DirectoryInfo(sub).Name;
-            if (this.FolderIgnoreNames.Any(x => subName.Equals(x, StringComparison.OrdinalIgnoreCase))) {
+            if (FolderIgnoreNames.Any(x => subName.Equals(x, StringComparison.OrdinalIgnoreCase))) {
                 continue;
             }
             var exe = Directory.GetFiles(sub, "*.exe", SearchOption.AllDirectories)
@@ -66,7 +66,7 @@ public static class LibraryScanner {
 
     private static GameEntry CreateEntry(string name, string exePath, string workingDir) {
         string? imagePath = null;
-        foreach (var imgName in this.ImageNames) {
+        foreach (var imgName in ImageNames) {
             var candidate = Path.Combine(workingDir, imgName);
             if (File.Exists(candidate)) {
                 imagePath = candidate;
