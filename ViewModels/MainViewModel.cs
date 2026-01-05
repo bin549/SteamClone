@@ -20,22 +20,22 @@ public class MainViewModel : INotifyPropertyChanged {
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
-	private string _libraryPath = ResolveDefaultLibraryPath();
+	private string libraryPath = ResolveDefaultLibraryPath();
 	public string LibraryPath {
-		get => _libraryPath;
+		get => this.libraryPath;
 		set {
-			if (_libraryPath == value) return;
-			_libraryPath = value;
+			if (this.libraryPath == value) return;
+			this.libraryPath = value;
 			RaisePropertyChanged();
 		}
 	}
 
-	private string _searchText = string.Empty;
+	private string searchText = string.Empty;
 	public string SearchText {
-		get => _searchText;
+		get => this.searchText;
 		set {
-			if (_searchText == value) return;
-			_searchText = value;
+			if (this.searchText == value) return;
+			this.searchText = value;
 			RaisePropertyChanged();
 			RaisePropertyChanged(nameof(FilteredGames));
 		}
@@ -43,12 +43,12 @@ public class MainViewModel : INotifyPropertyChanged {
 
 	public List<string> Categories { get; } = new() { "全部", "Game", "Desktop", "Web" };
 
-	private string _selectedCategory = "全部";
+	private string selectedCategory = "全部";
 	public string SelectedCategory {
-		get => _selectedCategory;
+		get => this.selectedCategory;
 		set {
-			if (_selectedCategory == value) return;
-			_selectedCategory = value;
+			if (this.selectedCategory == value) return;
+			this.selectedCategory = value;
 			RaisePropertyChanged();
 			RaisePropertyChanged(nameof(FilteredGames));
 		}
@@ -59,16 +59,13 @@ public class MainViewModel : INotifyPropertyChanged {
 	public IEnumerable<GameEntry> FilteredGames {
 		get {
 			var filtered = Games.AsEnumerable();
-			
 			if (SelectedCategory != "全部") {
 				filtered = filtered.Where(g => g.Category == SelectedCategory);
 			}
-			
 			if (!string.IsNullOrWhiteSpace(SearchText)) {
 				filtered = filtered.Where(g => g.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
 					|| g.ExecutablePath.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
 			}
-			
 			return filtered;
 		}
 	}
@@ -130,5 +127,3 @@ public class MainViewModel : INotifyPropertyChanged {
 		return Directory.Exists(candidate) ? candidate : defaultPath;
 	}
 }
-
-

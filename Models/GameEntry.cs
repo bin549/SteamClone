@@ -24,18 +24,18 @@ public class GameEntry {
 
 	public string DisplayPath => !string.IsNullOrWhiteSpace(Url) ? Url : ExecutablePath;
 
-	private Bitmap? _coverImage;
+	private Bitmap? coverImage;
 	public Bitmap? CoverImage {
 		get {
-			if (_coverImage != null || string.IsNullOrWhiteSpace(ImagePath)) {
-				return _coverImage;
+			if (this.coverImage != null || string.IsNullOrWhiteSpace(ImagePath)) {
+				return this.coverImage;
 			}
 			try {
-				_coverImage = new Bitmap(ImagePath);
+				this.coverImage = new Bitmap(ImagePath);
 			} catch {
-				_coverImage = null;
+				this.coverImage = null;
 			}
-			return _coverImage;
+			return this.coverImage;
 		}
 	}
 
@@ -48,5 +48,3 @@ public class GameEntry {
 		Url = url;
 	}
 }
-
-
