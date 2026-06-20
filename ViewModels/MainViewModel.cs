@@ -37,7 +37,7 @@ public class MainViewModel : INotifyPropertyChanged {
 			if (this.searchText == value) return;
 			this.searchText = value;
 			RaisePropertyChanged();
-			RaisePropertyChanged(nameof(FilteredGames));
+			RaiseLibraryStatsChanged();
 		}
 	}
 
@@ -50,7 +50,8 @@ public class MainViewModel : INotifyPropertyChanged {
 			if (this.selectedCategory == value) return;
 			this.selectedCategory = value;
 			RaisePropertyChanged();
-			RaisePropertyChanged(nameof(FilteredGames));
+			RaisePropertyChanged(nameof(ActiveFilterLabel));
+			RaiseLibraryStatsChanged();
 		}
 	}
 
@@ -67,6 +68,23 @@ public class MainViewModel : INotifyPropertyChanged {
 					|| g.ExecutablePath.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
 			}
 			return filtered;
+		}
+	}
+
+	public int TotalGames => Games.Count;
+	public int FilteredGameCount => FilteredGames.Count();
+	public int GameCount => Games.Count(g => g.Category == "Game");
+	public int DesktopCount => Games.Count(g => g.Category == "Desktop");
+	public int WebCount => Games.Count(g => g.Category == "Web");
+	public string ActiveFilterLabel => SelectedCategory == "全部" ? "全部内容" : SelectedCategory;
+	public string SearchStatusText {
+		get {
+			if (!string.IsNullOrWhiteSpace(SearchText)) {
+				return $"找到 {FilteredGameCount} / {TotalGames} 个项目";
+			}
+			return SelectedCategory == "全部"
+				? $"{TotalGames} 个项目已就绪"
+				: $"{SelectedCategory} · {FilteredGameCount} 个项目";
 		}
 	}
 
@@ -90,7 +108,17 @@ public class MainViewModel : INotifyPropertyChanged {
 				}
 			}
 		}
+		RaiseLibraryStatsChanged();
+	}
+
+	private void RaiseLibraryStatsChanged() {
 		RaisePropertyChanged(nameof(FilteredGames));
+		RaisePropertyChanged(nameof(TotalGames));
+		RaisePropertyChanged(nameof(FilteredGameCount));
+		RaisePropertyChanged(nameof(GameCount));
+		RaisePropertyChanged(nameof(DesktopCount));
+		RaisePropertyChanged(nameof(WebCount));
+		RaisePropertyChanged(nameof(SearchStatusText));
 	}
 
 	private void OpenGame(GameEntry? entry) {
