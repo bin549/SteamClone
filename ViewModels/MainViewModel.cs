@@ -54,6 +54,19 @@ public class MainViewModel : INotifyPropertyChanged {
 		}
 	}
 
+	private bool isDayMode;
+	public bool IsDayMode {
+		get => this.isDayMode;
+		set {
+			if (this.isDayMode == value) return;
+			this.isDayMode = value;
+			RaisePropertyChanged();
+			RaisePropertyChanged(nameof(ThemeToggleText));
+		}
+	}
+
+	public string ThemeToggleText => IsDayMode ? "切到夜间" : "切到白天";
+
 	public ObservableCollection<GameEntry> Games { get; } = new();
 
 	public IEnumerable<GameEntry> FilteredGames {
@@ -72,10 +85,12 @@ public class MainViewModel : INotifyPropertyChanged {
 
 	public ICommand RefreshCommand { get; }
 	public ICommand OpenCommand { get; }
+	public ICommand ToggleThemeCommand { get; }
 
 	public MainViewModel() {
 		RefreshCommand = new RelayCommand(Refresh);
 		OpenCommand = new RelayCommand<GameEntry>(OpenGame);
+		ToggleThemeCommand = new RelayCommand(() => IsDayMode = !IsDayMode);
 	}
 
 	public void Refresh() {
