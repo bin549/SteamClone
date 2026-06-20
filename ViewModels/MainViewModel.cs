@@ -37,7 +37,7 @@ public class MainViewModel : INotifyPropertyChanged {
 			if (this.searchText == value) return;
 			this.searchText = value;
 			RaisePropertyChanged();
-			RaiseLibraryStatsChanged();
+			RaisePropertyChanged(nameof(FilteredGames));
 		}
 	}
 
@@ -50,8 +50,7 @@ public class MainViewModel : INotifyPropertyChanged {
 			if (this.selectedCategory == value) return;
 			this.selectedCategory = value;
 			RaisePropertyChanged();
-			RaisePropertyChanged(nameof(ActiveFilterLabel));
-			RaiseLibraryStatsChanged();
+			RaisePropertyChanged(nameof(FilteredGames));
 		}
 	}
 
@@ -68,23 +67,6 @@ public class MainViewModel : INotifyPropertyChanged {
 					|| g.ExecutablePath.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
 			}
 			return filtered;
-		}
-	}
-
-	public int TotalGames => Games.Count;
-	public int FilteredGameCount => FilteredGames.Count();
-	public int GameCount => Games.Count(g => g.Category == "Game");
-	public int DesktopCount => Games.Count(g => g.Category == "Desktop");
-	public int WebCount => Games.Count(g => g.Category == "Web");
-	public string ActiveFilterLabel => SelectedCategory == "全部" ? "全部内容" : SelectedCategory;
-	public string SearchStatusText {
-		get {
-			if (!string.IsNullOrWhiteSpace(SearchText)) {
-				return $"找到 {FilteredGameCount} / {TotalGames} 个项目";
-			}
-			return SelectedCategory == "全部"
-				? $"{TotalGames} 个项目已就绪"
-				: $"{SelectedCategory} · {FilteredGameCount} 个项目";
 		}
 	}
 
@@ -108,17 +90,20 @@ public class MainViewModel : INotifyPropertyChanged {
 				}
 			}
 		}
-		RaiseLibraryStatsChanged();
+		AddDemoCardsIfEmpty();
+		RaisePropertyChanged(nameof(FilteredGames));
 	}
 
-	private void RaiseLibraryStatsChanged() {
-		RaisePropertyChanged(nameof(FilteredGames));
-		RaisePropertyChanged(nameof(TotalGames));
-		RaisePropertyChanged(nameof(FilteredGameCount));
-		RaisePropertyChanged(nameof(GameCount));
-		RaisePropertyChanged(nameof(DesktopCount));
-		RaisePropertyChanged(nameof(WebCount));
-		RaisePropertyChanged(nameof(SearchStatusText));
+	private void AddDemoCardsIfEmpty() {
+		if (Games.Count > 0) return;
+
+		var workingDirectory = AppContext.BaseDirectory;
+		Games.Add(new GameEntry("星际旅人", string.Empty, workingDirectory, null, "Game", "https://store.steampowered.com"));
+		Games.Add(new GameEntry("像素工坊", string.Empty, workingDirectory, null, "Game", "https://itch.io"));
+		Games.Add(new GameEntry("设计白板", string.Empty, workingDirectory, null, "Desktop", "https://www.figma.com"));
+		Games.Add(new GameEntry("音乐电台", string.Empty, workingDirectory, null, "Web", "https://music.youtube.com"));
+		Games.Add(new GameEntry("代码实验室", string.Empty, workingDirectory, null, "Desktop", "https://github.com"));
+		Games.Add(new GameEntry("云端资料库", string.Empty, workingDirectory, null, "Web", "https://www.notion.so"));
 	}
 
 	private void OpenGame(GameEntry? entry) {
