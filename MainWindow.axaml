@@ -56,7 +56,6 @@
 			<Setter Property="Background" Value="{StaticResource CardBackgroundBrush}"/>
 			<Setter Property="BorderBrush" Value="#2F3B4F"/>
 			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="BoxShadow" Value="0 10 22 0 #33000000"/>
 		</Style>
 		<Style Selector="Border.cover">
 			<Setter Property="Background" Value="{StaticResource CoverBackgroundBrush}"/>
@@ -67,9 +66,35 @@
 			<Setter Property="Padding" Value="0"/>
 			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="Cursor" Value="Hand"/>
+			<Setter Property="RenderTransform" Value="scale(1)"/>
+			<Setter Property="RenderTransformOrigin" Value="50%,50%"/>
+			<Setter Property="Transitions">
+				<Transitions>
+					<TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.14"/>
+				</Transitions>
+			</Setter>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<ContentPresenter Content="{TemplateBinding Content}"
+					                  ContentTemplate="{TemplateBinding ContentTemplate}"
+					                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+					                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+					                  Padding="{TemplateBinding Padding}"/>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+		<Style Selector="Button.cardButton:pointerover">
+			<Setter Property="RenderTransform" Value="scale(1.025)"/>
 		</Style>
 		<Style Selector="Button.cardButton:pointerover /template/ Border#border">
-			<Setter Property="Background" Value="{StaticResource CardHoverBrush}"/>
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+		<Style Selector="Button.cardButton:pressed /template/ Border#border">
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+		<Style Selector="Button.cardButton:focus /template/ Border#border">
+			<Setter Property="Background" Value="Transparent"/>
 		</Style>
 		<Style Selector="Button.actionButton">
 			<Setter Property="Background" Value="#243145"/>
@@ -119,7 +144,6 @@
 		<Style Selector="Grid.day Border.card">
 			<Setter Property="Background" Value="#FCFDF9"/>
 			<Setter Property="BorderBrush" Value="#D7E0D6"/>
-			<Setter Property="BoxShadow" Value="0 10 24 0 #246B7A8E"/>
 		</Style>
 		<Style Selector="Grid.day Border.cover">
 			<Setter Property="Background" Value="#E9F0EA"/>
@@ -151,9 +175,6 @@
 			<Setter Property="BorderBrush" Value="#CBD8C8"/>
 			<Setter Property="Foreground" Value="#223047"/>
 		</Style>
-		<Style Selector="Grid.day Button.cardButton:pointerover /template/ Border#border">
-			<Setter Property="Background" Value="#E8EFE4"/>
-		</Style>
 	</Window.Styles>
 
 	<Grid Classes="appRoot" RowDefinitions="Auto,Auto,*" ColumnDefinitions="*"
@@ -182,11 +203,11 @@
 			</Grid>
 		</Border>
 		
-		<ScrollViewer Grid.Row="2" Margin="10" Padding="8,2,8,18">
+		<ScrollViewer Grid.Row="2" Margin="10" Padding="8,2,8,64">
 			<ItemsControl ItemsSource="{Binding FilteredGames}" Width="1030" HorizontalAlignment="Center">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel Orientation="Horizontal" ItemWidth="206" ItemHeight="226"/>
+						<WrapPanel Orientation="Horizontal" ItemWidth="206" ItemHeight="238"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 
@@ -195,7 +216,6 @@
 						<Button Command="{Binding DataContext.OpenCommand, ElementName=Root}"
 						        CommandParameter="{Binding}"
 						        Classes="cardButton"
-						        ToolTip.Tip="{Binding DisplayPath}"
 						        Margin="9"
 						        HorizontalContentAlignment="Stretch"
 						        VerticalContentAlignment="Stretch">
